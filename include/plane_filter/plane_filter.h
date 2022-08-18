@@ -42,5 +42,7 @@ class PlaneFilter{
 
     void filterPlane(pcl::PointCloud<pcl::PointXYZ>::Ptr);
 
+    void setMarker(visualization_msgs::Marker&,const pcl::PointCloud<pcl::PointXYZ>::Ptr);
+
     void callBack(pcl::PointCloud<pcl::PointXYZ>::Ptr);
 };
