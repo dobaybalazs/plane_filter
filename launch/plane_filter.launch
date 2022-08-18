@@ -1,6 +1,6 @@
 <launch>
     <node name="plane_filter" pkg="plane_filter" type="plane_filter" output="screen" />
-    <param name="input_cloud" type="string" value="/left_os1/os1_cloud_node/points" />
+    <param name="input_cloud" type="string" value="/os_cloud_node/points" />
     <node pkg="rviz" type="rviz" name="rvizstart"  args="-d $(find plane_filter)/rviz_views/config.rviz" />
     <node name="rqt_conf_gui" pkg="rqt_reconfigure" type="rqt_reconfigure" output="screen"/>
 </launch>
