@@ -2,9 +2,10 @@
 
 
 PlaneFilter::PlaneFilter(ros::NodeHandlePtr nh){
+    nh->getParam("input_cloud",params::input_topic);
     sub = nh->subscribe(params::input_topic,1,&PlaneFilter::callBack,this);
 
-    pub = nh->advertise<pcl::PCLPointCloud2>("/output",1);
+    pub = nh->advertise<visualization_msgs::Marker>("/output",1);
 }
 
 void PlaneFilter::voxelFilter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud){
@@ -71,19 +72,23 @@ void PlaneFilter::setMarker(visualization_msgs::Marker& marker,const pcl::PointC
     marker.pose.orientation.y = 0.0;
     marker.pose.orientation.z = 0.0;
     marker.pose.orientation.w = 1.0;
-    marker.scale.x = 0.1;
-    marker.scale.y = 0.1;
+    marker.scale.x = 1;
+    marker.scale.y = 1;
     marker.scale.z = 0.1;
     marker.color.a = 1.0;
     marker.color.r = 1.0;
     marker.color.g = 0.0;
     marker.color.b = 0.0;
     for(const auto& point:cloud->points){
+        if(isnan(point.x) || isnan(point.y) || isnan(point.z)){
+
+        }else{
         geometry_msgs::Point newPoint;
         newPoint.x = point.x;
         newPoint.y = point.y;
         newPoint.z = point.z;
         marker.points.push_back(newPoint);
+        }
     }
 }
 
@@ -96,10 +101,12 @@ void PlaneFilter::callBack(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud){
     if(params::useVoxelF)
         PlaneFilter::voxelFilter(cloud);
     
-    if(params::usePlaneFilter)
+    if(params::usePlaneFilter){
         PlaneFilter::filterPlane(cloud);
+    }
+    if(!cloud->points.empty()){
+        PlaneFilter::setMarker(marker,cloud);
+        pub.publish(marker);
+    }
 
-    //PlaneFilter::setMarker(marker,cloud);
-
-    pub.publish(cloud);
 }

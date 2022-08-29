@@ -1,6 +1,6 @@
 #include "plane_filter/plane_filter.h"
 
-std::string params::input_topic = "";
+std::string params::input_topic = "/left_os1/os1_cloud_node/points";
 float params::min_x = -4.0;
 float params::min_y = -12.0;
 float params::min_z = -1.8;
@@ -39,10 +39,8 @@ void setParams(plane_filter::plane_filterConfig &config,uint32_t level){
 
 
 int main(int argc,char** argv){
-    ros::init(argc,argv,"plane_filter_node",ros::init_options::AnonymousName);
+    ros::init(argc,argv,"plane_filter_node");
     ros::NodeHandlePtr nh = boost::make_shared<ros::NodeHandle>();
-
-    nh->getParam("input_cloud",params::input_topic);
 
     dynamic_reconfigure::Server<plane_filter::plane_filterConfig> server;
     dynamic_reconfigure::Server<plane_filter::plane_filterConfig>::CallbackType f;
